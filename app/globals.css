@@ -108,6 +108,8 @@ img {
 .sec {
   padding: clamp(5rem, 12vw, 9rem) 0;
   position: relative;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ---------- reveal ---------- */
