@@ -7,6 +7,7 @@ import Tilt from "./Tilt";
 import SectionHead from "./SectionHead";
 import { Icon } from "./Icons";
 import { achievements } from "@/lib/data";
+import { playModalOpen, playModalClose } from "@/lib/sound";
 
 function AchievementCard({ a, index, onSelect }) {
   const hasDetails = Boolean(
@@ -144,6 +145,7 @@ export default function Achievements() {
 
   useEffect(() => {
     if (!selected) return;
+    playModalOpen();
 
     // Move focus into the modal on open
     if (closeBtnRef.current) {
@@ -161,6 +163,7 @@ export default function Achievements() {
     document.body.style.overflow = "hidden";
 
     return () => {
+      playModalClose();
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
     };

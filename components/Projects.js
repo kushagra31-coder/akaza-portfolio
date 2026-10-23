@@ -7,6 +7,7 @@ import SectionHead from "./SectionHead";
 import Tilt from "./Tilt";
 import { Icon } from "./Icons";
 import { projects } from "@/lib/data";
+import { playModalOpen, playModalClose } from "@/lib/sound";
 
 function Links({ links }) {
   if (!links || !links.length) return null;
@@ -91,11 +92,13 @@ export default function Projects() {
   // Modal keyboard and body scroll lock
   useEffect(() => {
     if (!selected) return;
+    playModalOpen();
     const onKey = (e) => e.key === "Escape" && setSelected(null);
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
+      playModalClose();
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };

@@ -194,11 +194,15 @@ img {
   border: 2px solid var(--paper);
   background: #000;
   transform: skewX(-8deg);
-  transition: background 0.15s, transform 0.15s, color 0.15s;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, transform 0.15s, color 0.15s, box-shadow 0.15s;
 }
 .chip:hover {
   background: var(--red);
+  color: #fff;
   transform: skewX(-8deg) translateY(-3px);
+  box-shadow: 3px 3px 0 var(--blue);
 }
 
 .btn {

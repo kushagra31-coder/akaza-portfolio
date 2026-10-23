@@ -6,6 +6,7 @@ import Reveal from "./Reveal";
 import SectionHead from "./SectionHead";
 import { Icon } from "./Icons";
 import { certs } from "@/lib/data";
+import { playModalOpen, playModalClose } from "@/lib/sound";
 
 export default function Certs() {
   const [sel, setSel] = useState(null);
@@ -17,11 +18,13 @@ export default function Certs() {
 
   useEffect(() => {
     if (!sel) return;
+    playModalOpen();
     const onKey = (e) => e.key === "Escape" && setSel(null);
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
+      playModalClose();
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };

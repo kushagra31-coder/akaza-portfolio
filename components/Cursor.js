@@ -21,7 +21,7 @@ export default function Cursor() {
       if (dot.current) dot.current.style.transform = `translate(${x}px, ${y}px)`;
       const t = e.target;
       if (ring.current && t && t.closest) {
-        ring.current.classList.toggle("hot", !!t.closest("a, button, [data-hot]"));
+        ring.current.classList.toggle("hot", !!t.closest("a, button, .chip, .soc, [data-hot], [role='button']"));
       }
     };
     const loop = () => {
