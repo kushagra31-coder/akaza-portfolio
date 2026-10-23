@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Reveal from "./Reveal";
 import SectionHead from "./SectionHead";
@@ -83,9 +83,87 @@ function ProjectPhotos({ project }) {
 export default function Projects() {
   const [selected, setSelected] = useState(null);
   const [mounted, setMounted] = useState(false);
+  const cfRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Coverflow: 3D tilt driven by the horizontal scroller's own scrollLeft.
+  // No wheel handling anywhere — vertical page scroll is never touched.
+  useEffect(() => {
+    const scroller = cfRef.current;
+    if (!scroller) return;
+    const items = Array.from(scroller.querySelectorAll(".cf-item"));
+    if (!items.length) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const mid = scroller.scrollLeft + scroller.clientWidth / 2;
+      for (const it of items) {
+        const c = it.offsetLeft + it.offsetWidth / 2;
+        const ratio = Math.max(-1.2, Math.min(1.2, (c - mid) / scroller.clientWidth));
+        if (reduced) {
+          it.style.transform = "";
+          continue;
+        }
+        const ry = (-ratio * 26).toFixed(2);
+        const sc = (1 - Math.min(Math.abs(ratio), 1) * 0.1).toFixed(3);
+        it.style.transform = `rotateY(${ry}deg) scale(${sc})`;
+        it.style.zIndex = String(100 - Math.round(Math.abs(ratio) * 50));
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    // Mouse drag-to-scroll, with click suppression after a real drag so a
+    // drag never opens the modal but a clean click always does.
+    let down = false;
+    let startX = 0;
+    let startL = 0;
+    let dragged = false;
+    const onDown = (e) => {
+      if (e.pointerType !== "mouse") return;
+      down = true;
+      dragged = false;
+      startX = e.clientX;
+      startL = scroller.scrollLeft;
+    };
+    const onMove = (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 6) dragged = true;
+      if (dragged) scroller.scrollLeft = startL - dx;
+    };
+    const onUp = () => {
+      down = false;
+    };
+    const onClickCapture = (e) => {
+      if (dragged) {
+        e.stopPropagation();
+        e.preventDefault();
+        dragged = false;
+      }
+    };
+    scroller.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    scroller.addEventListener("click", onClickCapture, true);
+
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      scroller.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      scroller.removeEventListener("click", onClickCapture, true);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Modal keyboard and body scroll lock
@@ -190,9 +268,11 @@ export default function Projects() {
           sub="Five main missions."
         />
 
-        <div className="proj-grid">
-          {projects.map((p, i) => (
-            <Tilt key={p.id}>
+        <div className="cf-wrap">
+          <div className="cf" ref={cfRef}>
+            {projects.map((p, i) => (
+              <div className="cf-item" key={p.id}>
+                <Tilt>
               <Reveal
                 from={i % 2 === 0 ? "left" : "right"}
                 delay={(i % 2) * 90}
@@ -260,8 +340,11 @@ export default function Projects() {
                   <Links links={p.links} />
                 </article>
               </Reveal>
-            </Tilt>
-          ))}
+                </Tilt>
+              </div>
+            ))}
+          </div>
+          <p className="cf-hint">← DRAG / SWIPE THROUGH THE MISSIONS →</p>
         </div>
       </div>
 

@@ -108,6 +108,8 @@ img {
 .sec {
   padding: clamp(5rem, 12vw, 9rem) 0;
   position: relative;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ---------- reveal ---------- */
@@ -1473,3 +1475,40 @@ button.cert:hover .cert-thumb img { transform: scale(1.06); }
 }
 
 
+
+/* ---------- coverflow missions carousel ---------- */
+.cf-wrap { perspective: 1500px; margin-top: 0.8rem; }
+.cf {
+  display: flex;
+  gap: 1.8rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1.2rem 0.6rem 1.4rem;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--red) rgba(255, 255, 255, 0.08);
+  -webkit-overflow-scrolling: touch;
+}
+.cf::-webkit-scrollbar { height: 8px; }
+.cf::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
+.cf::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+.cf-item {
+  flex: 0 0 min(600px, 88%);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.cf-item:first-child { flex-basis: min(680px, 94%); }
+.cf-item > .tilt,
+.cf-item .rv,
+.cf-item .proj { height: 100%; }
+.cf-hint {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  color: #9aa0c3;
+  margin-top: 0.2rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cf-item { transform: none !important; }
+}
