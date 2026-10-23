@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { profile, socials } from "@/lib/data";
 import { Icon } from "./Icons";
 
@@ -31,9 +31,20 @@ function useTypewriter(words) {
 
 export default function Hero() {
   const role = useTypewriter(profile.roles);
+  const secRef = useRef(null);
+
+  // If the intro loader was already seen this session it exits instantly,
+  // so the hero entrance stagger should run fast too (see .hero.seen CSS).
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("akaza-intro") === "1") {
+        secRef.current?.classList.add("seen");
+      }
+    } catch {}
+  }, []);
 
   return (
-    <section id="top" className="hero">
+    <section id="top" className="hero" ref={secRef}>
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <span className="caption">ISSUE #01 // THE ORIGIN</span>

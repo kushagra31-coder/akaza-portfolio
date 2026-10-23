@@ -1479,3 +1479,38 @@ button.cert:hover .cert-thumb img { transform: scale(1.06); }
 }
 
 
+
+/* ---------- reel-inspired motion, comic translation ---------- */
+/* 1) Hero entrance choreography: elements rise in sequence as the
+   loader lifts (fast version when the intro was already seen). Uses the
+   standalone `translate` property so it never fights caption tilts or
+   the glitch effect, which animate `transform`. */
+@keyframes herorise {
+  from { opacity: 0; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.hero-copy > * {
+  animation: herorise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  animation-delay: calc(1.55s + (var(--n, 0) * 0.09s));
+}
+.hero.seen .hero-copy > * { animation-delay: calc(0.05s + (var(--n, 0) * 0.06s)); }
+.hero-copy > *:nth-child(1) { --n: 0; }
+.hero-copy > *:nth-child(2) { --n: 1; }
+.hero-copy > *:nth-child(3) { --n: 2; }
+.hero-copy > *:nth-child(4) { --n: 3; }
+.hero-copy > *:nth-child(5) { --n: 4; }
+.hero-copy > *:nth-child(6) { --n: 5; }
+.hero-copy > *:nth-child(7) { --n: 6; }
+.hero-copy > *:nth-child(8) { --n: 7; }
+
+/* 2) Masked panel-sweep reveal for section titles: the title is wiped
+   open left-to-right as its section head reveals. */
+.rv .sec-title { clip-path: inset(-12% 100% -12% -3%); }
+.rv.in .sec-title {
+  clip-path: inset(-12% -3% -12% -3%);
+  transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1) 0.08s;
+}
+
+/* 3) Ghost headlines get scroll parallax (JS translates them slowly);
+   will-change keeps the drift on the compositor. */
+.ghost { will-change: transform; }

@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <noscript>
-          <style>{`.rv{opacity:1!important;transform:none!important}.loader{display:none!important}`}</style>
+          <style>{`.rv{opacity:1!important;transform:none!important}.loader{display:none!important}.rv .sec-title{clip-path:none!important}.hero-copy>*{animation:none!important;opacity:1!important}`}</style>
         </noscript>
         {children}
       </body>
