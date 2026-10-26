@@ -9,6 +9,49 @@ import { Icon } from "./Icons";
 import { achievements } from "@/lib/data";
 import { playModalOpen, playModalClose } from "@/lib/sound";
 
+
+function LogoTile({ a, size }) {
+  const tileStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    background: "#fff",
+    border: "2px solid #0b0b0f",
+    borderRadius: "10px",
+    padding: "6px 10px",
+    boxShadow: "3px 3px 0 #0b0b0f",
+    transform: "rotate(-2deg)",
+  };
+  if (a.logo) {
+    return (
+      <span style={tileStyle}>
+        <img
+          src={a.logo}
+          alt={a.title + " logo"}
+          style={{ height: size + "px", width: "auto", maxWidth: size * 4 + "px", objectFit: "contain", display: "block" }}
+        />
+      </span>
+    );
+  }
+  if (a.logoText) {
+    return (
+      <span
+        style={{
+          ...tileStyle,
+          fontFamily: "var(--display)",
+          fontWeight: 800,
+          letterSpacing: "2px",
+          color: "#0b0b0f",
+          fontSize: Math.round(size * 0.55) + "px",
+          lineHeight: size + "px",
+        }}
+      >
+        {a.logoText}
+      </span>
+    );
+  }
+  return null;
+}
+
 function AchievementCard({ a, index, onSelect }) {
   const hasDetails = Boolean(
     a.details &&
@@ -29,6 +72,11 @@ function AchievementCard({ a, index, onSelect }) {
           height: "100%",
         }}
       >
+        {a.logo || a.logoText ? (
+          <div style={{ marginBottom: "0.6rem" }}>
+            <LogoTile a={a} size={32} />
+          </div>
+        ) : null}
         <h3>{a.title}</h3>
         <p>{a.summary || a.text}</p>
         <div
@@ -262,6 +310,11 @@ export default function Achievements() {
                         </span>
                       ) : null}
                     </div>
+                    {selected.logo || selected.logoText ? (
+                      <div style={{ marginTop: "0.7rem" }}>
+                        <LogoTile a={selected} size={44} />
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
