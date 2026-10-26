@@ -1514,3 +1514,43 @@ button.cert:hover .cert-thumb img { transform: scale(1.06); }
 /* 3) Ghost headlines get scroll parallax (JS translates them slowly);
    will-change keeps the drift on the compositor. */
 .ghost { will-change: transform; }
+
+
+/* Click-spark bursts (Senn-inspired, comic re-skin) */
+.click-spark {
+  position: fixed;
+  z-index: 2000000000;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.click-spark i {
+  position: absolute;
+  left: -1.5px;
+  top: -4px;
+  width: 3px;
+  height: 10px;
+  border-radius: 2px;
+  opacity: 1;
+  animation: spark-fly 0.55s cubic-bezier(0.17, 0.67, 0.35, 1) forwards;
+}
+.click-spark i.dot {
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+@keyframes spark-fly {
+  from {
+    transform: rotate(var(--a)) translateY(0) scaleY(1);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(var(--a)) translateY(calc(-1 * var(--d))) scaleY(0.35);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .click-spark { display: none; }
+}
